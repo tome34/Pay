@@ -18,6 +18,9 @@ import com.replay.limty.model.common.WxTools;
 import com.replay.limty.utils.ToastTools;
 import com.switfpass.pay.utils.XmlUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,6 +34,7 @@ public class ShowActivity extends AppCompatActivity {
     private ImageView qrCode;
     private WxTools wxTools;
     private PayCallback callback;
+    private String mch_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,14 @@ public class ShowActivity extends AppCompatActivity {
 
         qrCode = (ImageView) findViewById(R.id.qrCode);
         wxTools = new WxTools(this);
-        show(body);
+        try {
+            show(body);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        if(PayTools.callBack != null){
-            this.callback = PayTools.callBack;
+        if(AsyncData.callBack != null){
+            this.callback = AsyncData.callBack;
         }
     }
 
@@ -55,13 +63,13 @@ public class ShowActivity extends AppCompatActivity {
             AsyncData.getInstance().sendPaymentState(5000, this);
             wxTools.shareText(urlText);
         } else if (i == R.id.back) {
-            Query.payState(this, PayTools.orderNumer, handler);
+            Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
         }
     }
 
     @Override
     public void onBackPressed() {
-        Query.payState(this, PayTools.orderNumer, handler);
+        Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
     }
 
     private Handler handler = new Handler() {
@@ -118,10 +126,11 @@ public class ShowActivity extends AppCompatActivity {
         }
     }
 
-    private void show(String body) {
-        Map<String, String> map = XmlUtils.parse(body);
-        final String code_img_url = map.get("code_img_url");
-        urlText = map.get("code_url");
+    private void show(String body) throws JSONException {
+        JSONObject json = new JSONObject(body);
+        final String code_img_url = json.optString("code_img_url");
+        urlText = json.optString("code_url");
+        mch_id = json.optString("mch_id");
         new Thread(new Runnable() {
             @Override
             public void run() {

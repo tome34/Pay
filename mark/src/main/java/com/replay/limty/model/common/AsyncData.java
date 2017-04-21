@@ -25,7 +25,6 @@ public class AsyncData {
     public static OrderInfo orderInfo;
     public static String attach = "";
     public static String payType = "";
-    public static String notifyUrl = "";
     public Context mContext;
     public static PayCallback callBack;
 
@@ -40,7 +39,7 @@ public class AsyncData {
         return instance;
     }
 
-    public void initData(final Context context,String body, String orderNumber, String money, String attach,String payType, String notifyUrl,final PayCallback callBack){
+    public void initData(final Context context,String body, String orderNumber, String money, String attach,String payType, final PayCallback callBack){
         this.mContext = context;
         orderInfo = OrderInfo.getInstance();
         orderInfo.setBody(body);
@@ -48,7 +47,6 @@ public class AsyncData {
         orderInfo.setMoney(money);
         this.attach = attach;
         this.payType = payType;
-        this.notifyUrl = notifyUrl;
         sendPaymentState(3000, context);
         this.callBack = new PayCallback() {
             @Override

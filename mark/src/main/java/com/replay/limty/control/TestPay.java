@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.model.common.PayCallback;
 import com.replay.limty.model.wxapp.AppPayment;
+import com.replay.limty.model.wxqr.QrPayment;
 import com.replay.limty.utils.Pref;
 
 /**
@@ -17,9 +18,7 @@ public class TestPay {
     public static final String WX_APP = "1000";
     public static final String WX_EWM = "2000";
     public static final String WX_GZH = "3000";
-    public static final String ALI_APP = "10000";
-    public static final String ALI_EWM = "20000";
-    public static final String ALI_GZH = "30000";
+    
     public static String appID;
     public static String partnerID;
     private boolean isPartner = true;
@@ -44,16 +43,16 @@ public class TestPay {
         //this.isPartner = keyTools.checkSign(context,key.toUpperCase());
     }
 
-    public void pay(Context context, String body, String orderNumber, String money, String attach, String payType, String notifyUrl, final PayCallback callBack){
+    public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack){
         this.mContext = context;
         if(payType == WX_APP){
             payBus = AppPayment.getInstance();
-            payBus.pay(context,body,orderNumber,money,attach,payType,notifyUrl,callBack);
         }else if(payType == WX_EWM){
-
+            payBus = QrPayment.getInstance();
         }else if(payType == WX_GZH){
 
         }
+        payBus.pay(context,body,orderNumber,money,attach,payType,callBack);
     }
 
     public boolean checkInfo(String body, String orderNubmer, String money) {
@@ -95,10 +94,10 @@ public class TestPay {
         if (payTag == 1) {
             payTag = 2;
             pay(mContext, AsyncData.orderInfo.getBody(), AsyncData.orderInfo.getOrderNumber(),
-                    AsyncData.orderInfo.getMoney(), AsyncData.attach, AsyncData.payType, AsyncData.notifyUrl, AsyncData.callBack);
+                    AsyncData.orderInfo.getMoney(), AsyncData.attach, AsyncData.payType, AsyncData.callBack);
         } else if (payTag == 2) {
             pay(mContext, AsyncData.orderInfo.getBody(), AsyncData.orderInfo.getOrderNumber(),
-                    AsyncData.orderInfo.getMoney(), AsyncData.attach, AsyncData.payType, AsyncData.notifyUrl, AsyncData.callBack);
+                    AsyncData.orderInfo.getMoney(), AsyncData.attach, AsyncData.payType, AsyncData.callBack);
             payTag = -1;
         } else if (payTag == -1) {
             payTag = 1;

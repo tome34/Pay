@@ -32,12 +32,13 @@ import it.sauronsoftware.base64.Base64;
 
 public class ServiceRequst {
 
-    public static final String query_url = "http://43.247.68.114:8081/main/preorder";
+    private static final String service_url = "http://43.247.68.114:8081/main/preorder";
     public final static String RE_KEY = "key_result";
     public static final int RE_SUCCESS_BACK = 0x08;
+    private static final String notify_url = "http://202.103.190.89:50/WXPAY/RcvMo.sy";
 
     public static void servicePay(Context context, String appID, String partnerId, String payType,
-                                String orderNumber, String body, String attach, String money, String phoneIp, String notify_url, final Handler handler) throws JSONException {
+                                String orderNumber, String body, String attach, String money, String phoneIp, final Handler handler) throws JSONException {
         JSONObject params = new JSONObject();
         String data = "";
         String up = "";
@@ -75,7 +76,9 @@ public class ServiceRequst {
 
         JSONObject obj = new JSONObject();
         obj.put("data",data);
-        VolleyRequst.getInstance(context).postJosnRequsts(query_url, time, up, "url", obj, new VolleyInterface(
+        obj.put("time",time);
+        obj.put("up",up);
+        VolleyRequst.getInstance(context).postJosnRequsts(service_url,"url", obj, new VolleyInterface(
                 VolleyInterface.mListener,VolleyInterface.mJsonListener,VolleyInterface.mErrorListener
         ) {
             @Override

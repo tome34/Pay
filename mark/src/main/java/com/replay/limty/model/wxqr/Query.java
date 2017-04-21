@@ -29,13 +29,13 @@ public class Query {
     public static final int RE_SUCCESS_BACK = 0x08;
 
 
-    public static void payState(Context context, String orderNumber, final Handler handler){
+    public static void payState(Context context, String orderNumber,String mch_id, final Handler handler){
         Map<String,String> params = new HashMap<>();
         params.put("service","unified.trade.query");
         params.put("version","2.0");
         params.put("charset","UTF-8");
         params.put("sign_type","MD5");
-        params.put("mch_id", GetString.getInstance().getMch());
+        params.put("mch_id", mch_id);
         params.put("out_trade_no",orderNumber);
         params.put("nonce_str", Tools.getNonceStr());
         params.put("sign",Tools.createSign(GetString.getInstance().getKey(),params));

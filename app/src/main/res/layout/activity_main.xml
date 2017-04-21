@@ -47,15 +47,50 @@
             android:layout_height="match_parent"
             android:hint="整数"
             />
-
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/qr_code"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="doPay"
+            android:text="短信支付" />
+
+        <EditText
+            android:id="@+id/pay_phone_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="金额"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="doPay"
+            android:text="发送验证码" />
+
+        <EditText
+            android:id="@+id/pay_phone_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint=""
+            />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView"

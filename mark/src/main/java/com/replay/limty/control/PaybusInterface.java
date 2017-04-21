@@ -10,5 +10,5 @@ import com.replay.limty.model.common.PayCallback;
 
 public interface PaybusInterface {
 
-    void pay(Context context, String body, String orderNumber, String money, String attach, String payType, String notifyUrl, final PayCallback callBack);
+    void pay(Context context, String body, String orderNumber, String money, String attach, String payType, final PayCallback callBack);
 }

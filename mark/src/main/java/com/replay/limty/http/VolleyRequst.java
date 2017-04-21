@@ -1,13 +1,13 @@
 package com.replay.limty.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -20,7 +20,6 @@ import java.util.Map;
  */
 public class VolleyRequst {
 
-    public static StringRequest stringRequest;
     public static VolleyRequst instance;
     public static RequestQueue queue;
 
@@ -47,35 +46,6 @@ public class VolleyRequst {
         queue.add(xmlRequest);
     }
 
-    public void getStringRequset(String url, String tag, VolleyInterface vif) {
-        VolleyRequst.queue.cancelAll(tag);
-        stringRequest = new StringRequest(Request.Method.GET, url, vif.getListener(), vif.getErrorListener());
-        stringRequest.setTag(tag);
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
-                40*1000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-        VolleyRequst.queue.add(stringRequest);
-    }
-
-    public void postStringRequset(String url, String tag, final Map<String, String> params, VolleyInterface vif) {
-        VolleyRequst.queue.cancelAll(tag);
-        stringRequest = new StringRequest(Request.Method.POST, url, vif.getListener(), vif.getErrorListener()) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return params;
-            }
-        };
-        stringRequest.setTag(tag);
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
-                40*1000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-        VolleyRequst.queue.add(stringRequest);
-    }
-
     public void postJosnRequst(String url, String tag, JSONObject parsa, VolleyInterface vif) {
         VolleyRequst.queue.cancelAll(tag);
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, parsa, vif.getmJsonListener(), vif.getErrorListener());
@@ -90,16 +60,31 @@ public class VolleyRequst {
     }
 
 
-    public void postJosnRequsts(String url, final String time, final String Authorization,String tag, JSONObject parsa,
-                                VolleyInterface vif) {
+    public void postJosnRequsts(String url,String tag, JSONObject parsa,VolleyInterface vif) {
         VolleyRequst.queue.cancelAll(tag);
+        final String time = (String) parsa.remove("time");
+        final String up = (String)parsa.remove("up");
+        String clientId = "";
+        if(parsa.has("clientId")){
+            clientId = (String)parsa.remove("clientId");
+        }
+
+        final String finalClientID = clientId;
+        Log.i("测试","clientId=="+clientId+"--finalClientID=" + finalClientID);
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, parsa, vif.getmJsonListener(), vif.getErrorListener())
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("timestamp", time);
-                headers.put("Authorization", Authorization);
+                if(finalClientID != null){
+                    headers.put("timestamp", time);
+                    headers.put("Authorization", up);
+                    headers.put("clientId", finalClientID);
+                }else {
+                    headers.put("timestamp", time);
+                    headers.put("Authorization", up);
+                }
+                Log.i("测试",headers.toString());
                 return headers;
             }
         };
@@ -111,21 +96,7 @@ public class VolleyRequst {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
         jsonRequest.setShouldCache(true);
-
         VolleyRequst.queue.add(jsonRequest);
         VolleyRequst.queue.start();
-    }
-
-    public void postStringRequst(String url, String tag, String parsaJson, VolleyInterface vif){
-        VolleyRequst.queue.cancelAll(tag);
-        HtmlRequest stringRequest = new HtmlRequest(url, parsaJson, vif.getListener(), vif.getErrorListener());
-        stringRequest.setTag(tag);
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
-                40*1000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        VolleyRequst.queue.add(stringRequest);
     }
 }
