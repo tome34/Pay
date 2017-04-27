@@ -10,8 +10,8 @@ import android.text.TextUtils;
 import com.replay.limty.control.PaybusInterface;
 import com.replay.limty.control.TestPay;
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.model.common.PayCallback;
-import com.replay.limty.utils.Tools;
+import com.replay.limty.control.PayCallback;
+import com.replay.limty.model.common.ServiceRequst;
 import com.switfpass.pay.MainApplication;
 import com.switfpass.pay.activity.PayPlugin;
 import com.switfpass.pay.bean.RequestMsg;
@@ -22,17 +22,17 @@ import org.json.JSONObject;
  * Created by Administrator on 2017/4/15 0015.
  */
 
-public class AppPayment extends AsyncData implements PaybusInterface {
+public class AppRequest extends AsyncData implements PaybusInterface {
 
-    public static AppPayment instance;
+    public static AppRequest instance;
 
-    private AppPayment() {
+    private AppRequest() {
         super();
     }
 
-    public static AppPayment getInstance() {
+    public static AppRequest getInstance() {
         if (instance == null) {
-            instance = new AppPayment();
+            instance = new AppRequest();
         }
         return instance;
     }
@@ -47,7 +47,7 @@ public class AppPayment extends AsyncData implements PaybusInterface {
 
     private void sendRequest(String body, String orderNumber, String money, String attach, String payType) {
         try {
-            ServiceRequst.servicePay(mContext, TestPay.appID, TestPay.partnerID, payType, orderNumber, body, attach, money, Tools.getHostIP(), handler);
+            ServiceRequst.servicePay(mContext, TestPay.appID, TestPay.partnerID, payType, orderNumber, body, attach, money,handler);
         } catch (Exception e) {
             e.printStackTrace();
         }

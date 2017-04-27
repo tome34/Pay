@@ -2,8 +2,6 @@ package com.replay.limty.control;
 
 import android.content.Context;
 
-import com.replay.limty.model.common.PayCallback;
-
 /**
  * Created by Administrator on 2017/4/17 0017.
  */

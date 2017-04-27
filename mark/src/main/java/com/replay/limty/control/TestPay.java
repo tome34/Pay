@@ -2,11 +2,15 @@ package com.replay.limty.control;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.model.common.PayCallback;
-import com.replay.limty.model.wxapp.AppPayment;
-import com.replay.limty.model.wxqr.QrPayment;
+import com.replay.limty.model.wxapp.AppRequest;
+import com.replay.limty.model.wxgzh.GzhRequest;
+import com.replay.limty.model.wxh5.H5Request;
+import com.replay.limty.model.wxqr.QrRequest;
+import com.replay.limty.model.zfbh5.ZfbH5Request;
+import com.replay.limty.model.zfbqr.ZfbQrRequest;
 import com.replay.limty.utils.Pref;
 
 /**
@@ -15,10 +19,15 @@ import com.replay.limty.utils.Pref;
 
 public class TestPay {
 
-    public static final String WX_APP = "1000";
-    public static final String WX_EWM = "2000";
-    public static final String WX_GZH = "3000";
-    
+    public static final String WX_APP = "pay.weixin.app";    //微信APP
+    public static final String WX_EWM = "pay.weixin.native"; //微信二维码
+    public static final String WX_GZH = "pay.weixin.jspay";  //微信公众号
+    public static final String WX_H5 = "pay.weixin.wappay";  //微信H5支付
+    public static final String ZFB_QR = "pay.alipay.native";//支付宝二维码
+    public static final String ZFB_WAPH5 = "H5";            //支付宝H5支付
+    public static final String ZFB_JS = "pay.alipy.jspay";  //支付宝服务窗支付
+    public static final String ZFB_wap = "unified.trade.pay"; //支付宝wap支付
+
     public static String appID;
     public static String partnerID;
     private boolean isPartner = true;
@@ -45,12 +54,26 @@ public class TestPay {
 
     public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack){
         this.mContext = context;
-        if(payType == WX_APP){
-            payBus = AppPayment.getInstance();
-        }else if(payType == WX_EWM){
-            payBus = QrPayment.getInstance();
-        }else if(payType == WX_GZH){
-
+        if(payType.equals(WX_APP)){
+            payBus = AppRequest.getInstance();
+        }else if(payType.equals(WX_EWM)){
+            payBus = QrRequest.getInstance();
+        }else if(payType.equals(WX_GZH)){
+            payBus = GzhRequest.getInstance();
+        }else if(payType.equals(WX_H5)){
+            payBus = H5Request.getInstance();
+        }else if(payType.equals(ZFB_QR)) {
+            Log.d("TAG","h53"+payType);
+            payBus = ZfbQrRequest.getInstance();
+        } else if(TestPay.ZFB_WAPH5.equals("H5")) {
+            Log.d("TAG","h51"+payType);
+            payType = "pay.alipay.native";
+           payBus = ZfbH5Request.getInstance();
+            Log.d("TAG","h52"+payType);
+        }else if(payType.equals(ZFB_JS)) {
+            payBus = H5Request.getInstance();
+        }else if(payType.equals(ZFB_wap)) {
+            payBus = H5Request.getInstance();
         }
         payBus.pay(context,body,orderNumber,money,attach,payType,callBack);
     }
@@ -88,6 +111,7 @@ public class TestPay {
         if (Pref.with(mContext).read("tag", 0) == 0) {
             Pref.with(mContext).write("tag", tag);
         }
+        AsyncData.getInstance().sendPaymentState(3001,mContext);
     }
 
     public void repairOrder() {

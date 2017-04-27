@@ -1,4 +1,4 @@
-package com.replay.limty.model.wxapp;
+package com.replay.limty.model.common;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -38,7 +38,8 @@ public class ServiceRequst {
     private static final String notify_url = "http://202.103.190.89:50/WXPAY/RcvMo.sy";
 
     public static void servicePay(Context context, String appID, String partnerId, String payType,
-                                String orderNumber, String body, String attach, String money, String phoneIp, final Handler handler) throws JSONException {
+                                String orderNumber, String body, String attach, String money,
+                                  final Handler handler) throws JSONException {
         JSONObject params = new JSONObject();
         String data = "";
         String up = "";
@@ -50,7 +51,7 @@ public class ServiceRequst {
         params.put("sdkVersion", GetString.getVersion());
         params.put("detail","123");
         params.put("attach",attach);
-        params.put("mch_create_ip",phoneIp);
+        params.put("mch_create_ip",Tools.getHostIP());
         params.put("deviceName", Tools.getPhoneModel());
         params.put("deviceCode",Tools.getAndroidVersion());
         params.put("imei",Tools.getIMEI(context));
@@ -61,6 +62,11 @@ public class ServiceRequst {
         params.put("payType",payType);
         params.put("timeStamp",Tools.getCurrentTime());
         params.put("notify_url",notify_url);
+
+        params.put("callback_url",notify_url);
+        params.put("sub_openid","wx1596235472356");
+        params.put("device_info","16359634586");
+        params.put("goods_tag","10000");
         params.put("sign",createSign(GetString.getInstance().getKey(),params.toString()));
         Log.i("测试","ServiceRequst.params=="+params.toString());
         String time = Tools.getTime();

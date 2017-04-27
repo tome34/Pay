@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.carch.ndkdemo.GetString;
+import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.TestPay;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
@@ -79,6 +80,7 @@ public class AsyncData {
             object.put("mobile_imsi", Tools.getIMSI(context));
             object.put("mobile_iccid", Tools.getICCID(context));
             object.put("client_ip", Tools.getHostIP());
+            object.put("payType",payType);
             Log.i(TAG, "url"+url+"参数=="+object.toString());
             VolleyRequst.getInstance(context).postJosnRequst(url, "PaymentState", object, new VolleyInterface(
                     null,VolleyInterface.mJsonListener,VolleyInterface.mErrorListener) {

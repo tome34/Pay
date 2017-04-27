@@ -23,3 +23,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn com.switfpass.pay.**
+-keep class com.swiftpass.pay.**{*;}
+
+-dontwarn com.replay.limty.control.**
+-keep class com.replay.limty.control.**{*;}

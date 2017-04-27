@@ -7,7 +7,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
-import com.carch.ndkdemo.GetString;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
 import com.replay.limty.utils.Tools;
@@ -38,7 +37,7 @@ public class Query {
         params.put("mch_id", mch_id);
         params.put("out_trade_no",orderNumber);
         params.put("nonce_str", Tools.getNonceStr());
-        params.put("sign",Tools.createSign(GetString.getInstance().getKey(),params));
+        params.put("sign",Tools.createSign("79e2618bd809a3599a9d7d6fa178ac9a",params));
         Log.i(TAG,"Query.payState=="+params.toString());
         VolleyRequst.getInstance(context).postXmlRequset(query_url, "query", XmlUtils.toXml(params),
                 new VolleyInterface(VolleyInterface.mXmlListener,VolleyInterface.mErrorListener) {

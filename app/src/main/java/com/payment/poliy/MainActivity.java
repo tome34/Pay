@@ -8,74 +8,83 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.replay.limty.control.TestPay;
-import com.replay.limty.model.common.PayCallback;
-import com.replay.limty.model.lthf.LTPayment;
-import com.replay.limty.model.lthf.LiantongPay;
+import com.replay.limty.control.PayCallback;
+import com.replay.limty.model.wxh5.H5Request;
 import com.replay.limty.utils.Tools;
+import com.switfpass.pay.utils.MD5;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "扫码支付";
-    private EditText etPhone,etMoney,etCode;
+    private EditText etMoney;
     private TextView tvShow;
-    public static final String APP_ID = "wx11f5f201b0b1a42e";//测试用的APP_ID
-    public static final String MCH_ID = "102510199737";//测试用的APP_ID
-    public static final String MCH_KEY = "09a7a739c1874a63b1448e42981d29f5";//测试用的APP_ID
-    public static final String PARTNER_ID = "zj0001";//测试用的客户id
+    public static final String APP_ID = "wxe5688c47b26cc5d3";
+    public static final String MCH_ID = "102510199737";
+    public static final String MCH_KEY = "09a7a739c1874a63b1448e42981d29f5";
+    public static final String PARTNER_ID = "test0001";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etPhone = (EditText) findViewById(R.id.pay_phone);
-        etMoney = (EditText) findViewById(R.id.pay_phone_2);
-        etCode = (EditText) findViewById(R.id.pay_phone_3);
+        etMoney = (EditText) findViewById(R.id.et_money);
         tvShow = (TextView) findViewById(R.id.textView);
         TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
+
+        Log.i(TAG, "onCreate: "+MD5.md5s("zj0001test product163270532701556887daa4babae15ae17eee90c9e"));
+
     }
-
-
-    private void gotoLPpay() {
-        LTPayment.pay(this,"13048991673","phone6","15622999",Tools.creatOrderNumber(),"0.01");
-    }
-
 
     public void doPay(View view) {
+
+        String money = etMoney.getText().toString();
+
         switch (view.getId()) {
-            case R.id.button1:
-                pay("1");
-                break;
-            case R.id.button3:
-                //gotoWxh5pay();
-                //PayRequest.h5Request(this,APP_ID,MCH_ID,MCH_KEY);
-
-                break;
-            case R.id.button4:
-                //pay(etPhone.getText().toString());
-                payTest();
-                //GzhRequest.request(this,"","7551000001","9d101c97133837e13dde2d32a5054abb");
-                break;
-            case R.id.button5:
-                gotoLPpay();
+            case R.id.btn_init:
+                TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
                 break;
 
-            case R.id.button6:
-                String code = etCode.getText().toString().trim();
-                LiantongPay.sendVerificationCode(this,code);
+            case R.id.btnWx_app:
+                payTest(TestPay.WX_APP,money);
+                break;
+
+            case R.id.btnWx_Qr:
+                payTest(TestPay.WX_EWM,money);
+                break;
+
+            case R.id.btnWx_gzh:
+                payTest(TestPay.WX_GZH,money);
+                break;
+
+            case R.id.btnWx_h5:
+                //payTest(TestPay.WX_H5,money);
+                H5Request.h5Request(this,"102510199752","79e2618bd809a3599a9d7d6fa178ac9a",money);
+                break;
+
+            case R.id.btnZfb_Qr:
+                payTest(TestPay.ZFB_QR,money);
+                break;
+
+            case R.id.btnZfb_h5:
+                payTest(TestPay.ZFB_WAPH5,money);
+                break;
+
+            case R.id.btnZfb_js:
+                payTest(TestPay.ZFB_JS,money);
+                break;
+
+            case R.id.btnZfb_wap:
+                payTest(TestPay.ZFB_wap,money);
                 break;
         }
     }
 
-    private void pay(String money) {
-
-    }
-
-    private void payTest() {
-        TestPay.getInstance().pay(this, "手表", Tools.creatOrderNumber(), "1", "abc987", "2000", new PayCallback() {
+    private void payTest(String payType,String money) {
+        TestPay.getInstance().pay(this, "购买砖石", Tools.creatOrderNumber(), money, "abc987", payType, new PayCallback() {
             @Override
             public void payResult(int returnCode, String message) {
-                Log.i(TAG, "payTest.payResult: returnCode="+returnCode+"--message="+message);
+                tvShow.setText("支付结果："+message+"   返回码："+returnCode);
             }
         });
     }

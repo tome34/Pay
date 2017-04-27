@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.replay.limty.R;
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.model.common.PayCallback;
+import com.replay.limty.control.PayCallback;
 import com.replay.limty.model.common.WxTools;
 import com.replay.limty.utils.ToastTools;
 import com.switfpass.pay.utils.XmlUtils;
@@ -131,6 +131,7 @@ public class ShowActivity extends AppCompatActivity {
         final String code_img_url = json.optString("code_img_url");
         urlText = json.optString("code_url");
         mch_id = json.optString("mch_id");
+
         new Thread(new Runnable() {
             @Override
             public void run() {

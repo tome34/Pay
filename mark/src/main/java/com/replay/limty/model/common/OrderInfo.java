@@ -18,6 +18,15 @@ public class OrderInfo {
      * 订单金额
      */
     private String money;
+    /**
+     * 支付类型
+     */
+    private String payType;
+    /**
+     * 自定义参数
+     */
+    private String attach;
+
 
     public static OrderInfo instance;
 
