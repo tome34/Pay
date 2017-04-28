@@ -2,6 +2,7 @@ package com.payment.poliy;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,15 +11,14 @@ import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.TestPay;
 import com.replay.limty.model.wxh5.H5Request;
 import com.replay.limty.utils.Tools;
+import com.switfpass.pay.utils.MD5;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "扫码支付";
     private EditText etMoney;
     private TextView tvShow;
-    public static final String APP_ID = "wxe5688c47b26cc5d3";
-    public static final String MCH_ID = "102510199737";
-    public static final String MCH_KEY = "09a7a739c1874a63b1448e42981d29f5";
+    public static final String APP_ID = "wx0631f3040d389b5c";
     public static final String PARTNER_ID = "test0001";
 
     @Override
@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         etMoney = (EditText) findViewById(R.id.et_money);
         tvShow = (TextView) findViewById(R.id.textView);
         TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
+
+        Log.i(TAG, "onCreate: "+MD5.md5s("test0001测试120170428144908028LJ s0987618bd809a3599a9d7d6fa178ac9a").toUpperCase());
+
     }
 
     public void doPay(View view) {
@@ -37,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (view.getId()) {
             case R.id.btn_init:
-                TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
+//                TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
+
+                TestAPI.sendRequest(this,"api测试",Tools.creatOrderNumber(),"1","abc887",TestAPI.WX_APP);
                 break;
 
             case R.id.btnWx_app:
