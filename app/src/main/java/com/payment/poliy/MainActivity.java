@@ -2,16 +2,14 @@ package com.payment.poliy;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.replay.limty.control.TestPay;
 import com.replay.limty.control.PayCallback;
+import com.replay.limty.control.TestPay;
 import com.replay.limty.model.wxh5.H5Request;
 import com.replay.limty.utils.Tools;
-import com.switfpass.pay.utils.MD5;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         etMoney = (EditText) findViewById(R.id.et_money);
         tvShow = (TextView) findViewById(R.id.textView);
         TestPay.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
-
-        Log.i(TAG, "onCreate: "+MD5.md5s("zj0001test product163270532701556887daa4babae15ae17eee90c9e"));
-
     }
 
     public void doPay(View view) {

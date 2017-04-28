@@ -115,7 +115,7 @@ public class H5Request  extends AsyncData implements PaybusInterface {
                 if (map.get("status").toString().equalsIgnoreCase("0")){
                     RequestMsg msg = new RequestMsg();
                     msg.setTokenId(map.get("token_id").toString());
-                    msg.setTradeType(MainApplication.PAY_WX_WAP);
+                    msg.setTradeType(MainApplication.PAY_NEW_ZFB_WAP);
                     PayPlugin.unifiedH5Pay((Activity) context, msg);
                 }else{
                     Toast.makeText(context, "支付失败", Toast.LENGTH_LONG).show();
@@ -141,9 +141,9 @@ public class H5Request  extends AsyncData implements PaybusInterface {
         params.put("mch_create_ip", Tools.getHostIP());
         params.put("notify_url", "http://202.103.190.89:50/WXPAY/RcvMo.sy");
         params.put("nonce_str", Tools.getNonceStr());
-        params.put("device_info", "AND_SDK");
-        params.put("mch_app_name", "Spay企业版");
-        params.put("mch_app_id", "cn.swiftpass.wxpay");
+//        params.put("device_info", "AND_SDK");
+//        params.put("mch_app_name", "Spay企业版");
+//        params.put("mch_app_id", "cn.swiftpass.wxpay");
         params.put("limit_credit_pay", "0");
         params.put("sign", Tools.createSign(mchKey, params));
         return XmlUtils.toXml(params);
