@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
 import com.replay.limty.utils.Tools;
@@ -27,7 +28,6 @@ public class Query {
     public final static String RE_KEY = "key_result";
     public static final int RE_SUCCESS_BACK = 0x08;
 
-
     public static void payState(Context context, String orderNumber,String mch_id, final Handler handler){
         Map<String,String> params = new HashMap<>();
         params.put("service","unified.trade.query");
@@ -37,7 +37,7 @@ public class Query {
         params.put("mch_id", mch_id);
         params.put("out_trade_no",orderNumber);
         params.put("nonce_str", Tools.getNonceStr());
-        params.put("sign",Tools.createSign("79e2618bd809a3599a9d7d6fa178ac9a",params));
+        params.put("sign",Tools.createSign(PayRequest.key,params));
         Log.i(TAG,"Query.payState=="+params.toString());
         VolleyRequst.getInstance(context).postXmlRequset(query_url, "query", XmlUtils.toXml(params),
                 new VolleyInterface(VolleyInterface.mXmlListener,VolleyInterface.mErrorListener) {

@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.control.PaybusInterface;
-import com.replay.limty.control.TestPay;
 import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.control.PayCallback;
 import com.replay.limty.model.common.ServiceRequst;
@@ -40,14 +40,14 @@ public class AppRequest extends AsyncData implements PaybusInterface {
     @Override
     public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack) {
         initData(context, body, orderNumber, money, attach, payType,callBack);
-        if (TestPay.getInstance().checkInfo(body, orderNumber, money)) {
+        if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             sendRequest(body, orderNumber, money, attach, payType);
         }
     }
 
     private void sendRequest(String body, String orderNumber, String money, String attach, String payType) {
         try {
-            ServiceRequst.servicePay(mContext, TestPay.appID, TestPay.partnerID, payType, orderNumber, body, attach, money,handler);
+            ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,7 +75,7 @@ public class AppRequest extends AsyncData implements PaybusInterface {
                     try {
                         JSONObject obj = result.optJSONObject("data");
                         if (!TextUtils.isEmpty(obj.optString("token_id"))) {
-                            TestPay.getInstance().executeTask();
+                            PayRequest.getInstance().executeTask();
                             RequestMsg msg = new RequestMsg();
                             msg.setTokenId(obj.optString("token_id"));
                             msg.setTradeType(MainApplication.WX_APP_TYPE);
@@ -88,7 +88,7 @@ public class AppRequest extends AsyncData implements PaybusInterface {
                         callBack.payResult(3003, "上下文非法");
                     }
                 } else {
-                    TestPay.getInstance().repairOrder();
+                    PayRequest.getInstance().repairOrder();
                 }
             } catch (Exception e) {
                 callBack.payResult(3006, "预下单数据解析异常");

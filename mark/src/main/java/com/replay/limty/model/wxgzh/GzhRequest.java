@@ -1,15 +1,16 @@
 package com.replay.limty.model.wxgzh;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.replay.limty.control.PaybusInterface;
-import com.replay.limty.control.TestPay;
-import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.control.PayCallback;
+import com.replay.limty.control.PayRequest;
+import com.replay.limty.control.PaybusInterface;
+import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.model.common.ServiceRequst;
 
 import org.json.JSONObject;
@@ -36,15 +37,14 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
     @Override
     public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack) {
         initData(context, body, orderNumber, money, attach, payType, callBack);
-        if (TestPay.getInstance().checkInfo(body, orderNumber, money)) {
+        if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             sendRequest(body, orderNumber, money, attach, payType);
         }
     }
 
     private void sendRequest(String body, String orderNumber, String money, String attach, String payType) {
         try {
-            //GzhRequest.request(mContext,"","7551000001","9d101c97133837e13dde2d32a5054abb");
-            ServiceRequst.servicePay(mContext,TestPay.appID, TestPay.partnerID,payType, orderNumber, body, attach, money,handler);
+            ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID,payType, orderNumber, body, attach, money,handler);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,9 +71,19 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
                 if (result.optString("resultCode").equalsIgnoreCase("0")) {
                     try {
                         JSONObject obj = result.optJSONObject("data");
-                        if (!TextUtils.isEmpty(obj.optString("token_id"))) {
+                        String tokenID = obj.optString("token_id");
+                        if (!TextUtils.isEmpty(tokenID)) {
                             //TODO
-
+                            String url = "https://pay.swiftpass.cn/pay/jspay?token_id="+tokenID+"&showwxtitle=1";
+                            String url6 = "intent://dl/businessWebview/link?appid=wx6fb989854b5583ed&url=" + url + "#Intent;package=com.tencent.mm;scheme=weixin;i.translate_link_scene=1;end;";
+                            Intent intent = Intent.parseUri(url6, 1);
+                            intent.setAction(Intent.ACTION_VIEW);
+                            intent.addCategory("android.intent.category.BROWSABLE");
+                            intent.setComponent(null);
+//                            Intent intent = new Intent();
+//                            intent.setClass(mContext,ActivityH5.class);
+//                            intent.putExtra("uri",url);
+                            mContext.startActivity(intent);
                         } else {
                             callBack.payResult(3006, "没有获取到token_id");
                         }
@@ -81,7 +91,7 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
                         callBack.payResult(3003, "上下文非法");
                     }
                 } else {
-                    TestPay.getInstance().repairOrder();
+                    PayRequest.getInstance().repairOrder();
                 }
             } catch (Exception e) {
                 callBack.payResult(3006, "预下单数据解析异常");

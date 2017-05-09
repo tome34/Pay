@@ -3,7 +3,9 @@ package com.replay.limty.model.wxqr;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -11,17 +13,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.carch.ndkdemo.GetString;
 import com.replay.limty.R;
-import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.control.PayCallback;
+import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.model.common.WxTools;
 import com.replay.limty.utils.ToastTools;
 import com.switfpass.pay.utils.XmlUtils;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -52,7 +59,7 @@ public class ShowActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(AsyncData.callBack != null){
+        if (AsyncData.callBack != null) {
             this.callback = AsyncData.callBack;
         }
     }
@@ -63,13 +70,46 @@ public class ShowActivity extends AppCompatActivity {
             AsyncData.getInstance().sendPaymentState(5000, this);
             wxTools.shareText(urlText);
         } else if (i == R.id.back) {
-            Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
+            Query.payState(this, AsyncData.orderInfo.getOrderNumber(), mch_id, handler);
+        } else if (i == R.id.saveQr) {
+            saveBitmap(qrBitmap);
+        } else if(i == R.id.goWX){
+            IWXAPI api = WXAPIFactory.createWXAPI(this, GetString.getInstance().getAppid(), false);
+            api.registerApp(GetString.getInstance().getAppid());
+            api.openWXApp();
+        }
+    }
+
+    public void saveBitmap(Bitmap bitmap) {
+        File appDir = new File(Environment.getExternalStorageDirectory(), "微信二维码");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = "payQR.png";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            boolean isSuccess = bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+
+            if (isSuccess) {
+                ToastTools.show(this, "保存成功");
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+                findViewById(R.id.saveQr).setBackgroundResource(R.drawable.pressed);
+                findViewById(R.id.saveQr).setEnabled(false);
+            } else {
+                ToastTools.show(this, "保存失败");
+            }
+        } catch (Exception e) {
+            ToastTools.show(this, "保存失败" + e.toString());
+            e.printStackTrace();
         }
     }
 
     @Override
     public void onBackPressed() {
-        Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
+        Query.payState(this, AsyncData.orderInfo.getOrderNumber(), mch_id, handler);
     }
 
     private Handler handler = new Handler() {

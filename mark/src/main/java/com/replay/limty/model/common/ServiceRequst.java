@@ -63,12 +63,12 @@ public class ServiceRequst {
         params.put("timeStamp",Tools.getCurrentTime());
         params.put("notify_url",notify_url);
 
-        params.put("callback_url",notify_url);
-        params.put("sub_openid","wx1596235472356");
+        params.put("callback_url","");
+        params.put("sub_openid","oHoG71Dt8-O8j2Z4JwY_TVCajVb4");
         params.put("device_info","16359634586");
         params.put("goods_tag","10000");
         params.put("sign",createSign(GetString.getInstance().getKey(),params.toString()));
-        Log.i("测试","ServiceRequst.params=="+params.toString());
+        Log.i("测试","service_url=="+service_url+"ServiceRequst.params=="+params.toString());
         String time = Tools.getTime();
         String key = keyTools.getKey(time);
         try {

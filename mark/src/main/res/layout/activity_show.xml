@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:orientation="vertical"
-    >
+    android:background="#e4e4e4"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#333"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:background="#333">
 
         <ImageView
             android:id="@+id/back"
             android:layout_width="40dp"
             android:layout_height="25dp"
-            android:layout_gravity="center"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:onClick="doClick"
-            android:background="@drawable/back" />
-    </LinearLayout>
+            android:background="@drawable/back"
+            android:onClick="doClick" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/qrCode"
@@ -40,32 +40,63 @@
         android:background="@drawable/ok"
         android:gravity="center"
         android:onClick="doClick"
-        />
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/saveQr"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_click"
+        android:gravity="center"
+        android:onClick="doClick"
+        android:text="保存二维码"
+        android:textColor="#fff"
+        android:visibility="visible"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/goWX"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_click"
+        android:gravity="center"
+        android:onClick="doClick"
+        android:text="打开微信"
+        android:textColor="#fff"
+        android:visibility="visible"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:orientation="vertical"
         android:paddingTop="20dp"
-        android:orientation="vertical">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/timg2" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:text=" 点击分享给任意好友（可以选择自己），留在微信中点击链接完成支付。"
                 android:textColor="#ffffff"
+                android:textSize="16sp"
                 tools:layout_editor_absoluteY="400dp" />
         </LinearLayout>
 
@@ -74,18 +105,72 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/timg2" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:text=" 此链接不含浏览内容，不会暴露您的隐私。"
-                android:textColor="#fff" />
+                android:textColor="#fff"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/timg2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 点击保存二维码，保存成功后点击上方按钮打开微信。"
+                android:textColor="#000"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteY="400dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/timg2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 在微信中打开扫一扫功能，选择扫描相册中的二维码即可完成支付。"
+                android:textColor="#000"
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 

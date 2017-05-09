@@ -6,7 +6,7 @@ import android.util.Log;
 import com.android.volley.VolleyError;
 import com.carch.ndkdemo.GetString;
 import com.replay.limty.control.PayCallback;
-import com.replay.limty.control.TestPay;
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
 import com.replay.limty.utils.Pref;
@@ -65,8 +65,8 @@ public class AsyncData {
         String url = Pref.with(context).read("merchUrl", defulUrl)+"APPpayStateCode/RcvMo.sy";
         try {
             object.put("payStateCode", payStateCode);
-            object.put("appId", TestPay.appID);
-            object.put("allocationID", TestPay.partnerID);
+            object.put("appId", PayRequest.appID);
+            object.put("allocationID", PayRequest.partnerID);
             object.put("merchID", GetString.getInstance().getMch());
             object.put("commodity", orderInfo.getBody());
             object.put("orderNumer", orderInfo.getOrderNumber());

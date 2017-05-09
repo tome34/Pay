@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.control.PaybusInterface;
-import com.replay.limty.control.TestPay;
 import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.control.PayCallback;
 import com.replay.limty.model.common.ServiceRequst;
@@ -41,9 +41,9 @@ public class ZfbJsRequest extends AsyncData implements PaybusInterface {
         ZfbJsRequest.context = context ;
         initData(context, body, orderNumber, money, attach, payType, callBack);
         //检查
-        if (TestPay.getInstance().checkInfo(body, orderNumber, money)) {
+        if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             try {
-                ServiceRequst.servicePay(mContext, TestPay.appID, TestPay.partnerID, payType, orderNumber, body, attach, money,handler);
+                ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -72,7 +72,7 @@ public class ZfbJsRequest extends AsyncData implements PaybusInterface {
                     try {
                         JSONObject obj = result.optJSONObject("data");
                         if (!TextUtils.isEmpty(obj.optString("code_img_url"))) {
-                            TestPay.getInstance().executeTask(); //下单成功
+                            PayRequest.getInstance().executeTask(); //下单成功
                            //调起支付
                             String url = obj.optString("code_url");
                             init(url);
@@ -85,7 +85,7 @@ public class ZfbJsRequest extends AsyncData implements PaybusInterface {
                         callBack.payResult(3003, "上下文非法");
                     }
                 } else {
-                    TestPay.getInstance().repairOrder();
+                    PayRequest.getInstance().repairOrder();
                 }
             } catch (Exception e) {
                 callBack.payResult(3006, "预下单数据解析异常");

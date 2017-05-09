@@ -16,7 +16,7 @@ import com.replay.limty.utils.Pref;
  * Created by Administrator on 2017/4/17 0017.
  */
 
-public class TestPay {
+public class PayRequest {
 
     public static final String WX_APP = "pay.weixin.app";    //微信APP
     public static final String WX_EWM = "pay.weixin.native"; //微信二维码
@@ -29,26 +29,27 @@ public class TestPay {
 
     public static String appID;
     public static String partnerID;
+    public static String key;
     private boolean isPartner = true;
     private PaybusInterface payBus;
-    public static TestPay instance;
+    public static PayRequest instance;
     private int tag = 0;
     private int payTag = 1;
     private static int payUL = 9;
     private static int payException = 16;
     public Context mContext;
 
-    public static TestPay getInstance() {
+    public static PayRequest getInstance() {
         if (instance == null) {
-            instance = new TestPay();
+            instance = new PayRequest();
         }
         return instance;
     }
 
-    public void init(Context context,String appId, String partnerID, String key){
+    public void init(String appId, String partnerID,String key){
         this.appID = appId;
         this.partnerID = partnerID;
-        //this.isPartner = keyTools.checkSign(context,key.toUpperCase());
+        this.key = key;
     }
 
     public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack){
