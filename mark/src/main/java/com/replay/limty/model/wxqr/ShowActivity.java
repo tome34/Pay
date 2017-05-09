@@ -13,9 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.carch.ndkdemo.GetString;
 import com.replay.limty.R;
 import com.replay.limty.control.PayCallback;
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.model.common.WxTools;
 import com.replay.limty.utils.ToastTools;
@@ -74,8 +74,8 @@ public class ShowActivity extends AppCompatActivity {
         } else if (i == R.id.saveQr) {
             saveBitmap(qrBitmap);
         } else if(i == R.id.goWX){
-            IWXAPI api = WXAPIFactory.createWXAPI(this, GetString.getInstance().getAppid(), false);
-            api.registerApp(GetString.getInstance().getAppid());
+            IWXAPI api = WXAPIFactory.createWXAPI(this, PayRequest.appID, false);
+            api.registerApp(PayRequest.appID);
             api.openWXApp();
         }
     }

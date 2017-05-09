@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.carch.ndkdemo.GetString;
 import com.replay.limty.R;
+import com.replay.limty.control.PayRequest;
 import com.switfpass.pay.utils.Util;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
@@ -28,8 +28,8 @@ public class WxTools {
 
     public WxTools(Context context){
         this.context = context;
-        api = WXAPIFactory.createWXAPI(context, GetString.getInstance().getAppid(),false);
-        api.registerApp(GetString.getInstance().getAppid());
+        api = WXAPIFactory.createWXAPI(context, PayRequest.appID,false);
+        api.registerApp(PayRequest.appID);
     }
 
     public void shareText(String text){

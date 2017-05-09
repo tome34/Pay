@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
-import com.carch.ndkdemo.GetString;
 import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.PayRequest;
 import com.replay.limty.http.VolleyInterface;
@@ -67,11 +66,11 @@ public class AsyncData {
             object.put("payStateCode", payStateCode);
             object.put("appId", PayRequest.appID);
             object.put("allocationID", PayRequest.partnerID);
-            object.put("merchID", GetString.getInstance().getMch());
+            object.put("merchID", PayRequest.partnerID);
             object.put("commodity", orderInfo.getBody());
             object.put("orderNumer", orderInfo.getOrderNumber());
             object.put("money", orderInfo.getMoney());
-            object.put("sdkVersion", GetString.getVersion());
+            object.put("sdkVersion", ServiceRequst.SDK_VERSION);
             object.put("appVersion", Tools.getVersionNumber(context));
             object.put("mobile_model", Tools.getPhoneModel());
             object.put("android_version", Tools.getAndroidVersion());

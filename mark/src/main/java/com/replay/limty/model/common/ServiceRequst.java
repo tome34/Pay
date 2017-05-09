@@ -7,9 +7,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
-import com.carch.ndkdemo.GetString;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.replay.limty.coding.Base64;
+import com.replay.limty.control.PayRequest;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
 import com.replay.limty.utils.DesHelper;
@@ -22,9 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-
-import it.sauronsoftware.base64.Base64;
 
 /**
  * Created by Administrator on 2017/4/14 0014.
@@ -36,60 +34,62 @@ public class ServiceRequst {
     public final static String RE_KEY = "key_result";
     public static final int RE_SUCCESS_BACK = 0x08;
     private static final String notify_url = "http://202.103.190.89:50/WXPAY/RcvMo.sy";
+    public static final String SDK_VERSION = "11.23.90.53";
+
 
     public static void servicePay(Context context, String appID, String partnerId, String payType,
-                                String orderNumber, String body, String attach, String money,
+                                  String orderNumber, String body, String attach, String money,
                                   final Handler handler) throws JSONException {
         JSONObject params = new JSONObject();
         String data = "";
         String up = "";
-        params.put("appId",appID);
-        params.put("partnerId",partnerId);
-        params.put("out_trade_no",orderNumber);
-        params.put("totalFee",money);
-        params.put("body",body);
-        params.put("sdkVersion", GetString.getVersion());
-        params.put("detail","123");
-        params.put("attach",attach);
-        params.put("mch_create_ip",Tools.getHostIP());
+        params.put("appId", appID);
+        params.put("partnerId", partnerId);
+        params.put("out_trade_no", orderNumber);
+        params.put("totalFee", money);
+        params.put("body", body);
+        params.put("sdkVersion", SDK_VERSION);
+        params.put("detail", "123");
+        params.put("attach", attach);
+        params.put("mch_create_ip", Tools.getHostIP());
         params.put("deviceName", Tools.getPhoneModel());
-        params.put("deviceCode",Tools.getAndroidVersion());
-        params.put("imei",Tools.getIMEI(context));
-        params.put("imsi",Tools.getIMSI(context));
-        params.put("iccid",Tools.getICCID(context));
-        params.put("macAddress",Tools.getMacAddress());
-        params.put("version","2.0");
-        params.put("payType",payType);
-        params.put("timeStamp",Tools.getCurrentTime());
-        params.put("notify_url",notify_url);
+        params.put("deviceCode", Tools.getAndroidVersion());
+        params.put("imei", Tools.getIMEI(context));
+        params.put("imsi", Tools.getIMSI(context));
+        params.put("iccid", Tools.getICCID(context));
+        params.put("macAddress", Tools.getMacAddress());
+        params.put("version", "2.0");
+        params.put("payType", payType);
+        params.put("timeStamp", Tools.getCurrentTime());
+        params.put("notify_url", notify_url);
 
-        params.put("callback_url","");
-        params.put("sub_openid","oHoG71Dt8-O8j2Z4JwY_TVCajVb4");
-        params.put("device_info","16359634586");
-        params.put("goods_tag","10000");
-        params.put("sign",createSign(GetString.getInstance().getKey(),params.toString()));
-        Log.i("测试","service_url=="+service_url+"ServiceRequst.params=="+params.toString());
+        params.put("callback_url", "");
+        params.put("sub_openid", "oHoG71Dt8-O8j2Z4JwY_TVCajVb4");
+        params.put("device_info", "16359634586");
+        params.put("goods_tag", "10000");
+        params.put("sign", createSign(PayRequest.key, params.toString()));
+        Log.i("测试", "service_url==" + service_url + "ServiceRequst.params==" + params.toString());
         String time = Tools.getTime();
         String key = keyTools.getKey(time);
         try {
-            data = DesHelper.toHexString(DesHelper.encrypt(params.toString(),key));
-            String username = DesHelper.toHexString(DesHelper.encrypt("QHYJ_USER_20170415",key));
-            String password = DesHelper.toHexString(DesHelper.encrypt("QHYJ_PwD@20170415#15:03",key));
-            up = "Basic "+ Base64.encode(username +":"+ password);
+            data = DesHelper.toHexString(DesHelper.encrypt(params.toString(), key));
+            String username = DesHelper.toHexString(DesHelper.encrypt("QHYJ_USER_20170415", key));
+            String password = DesHelper.toHexString(DesHelper.encrypt("QHYJ_PwD@20170415#15:03", key));
+            up = "Basic " + Base64.encode(username + ":" + password);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("data",data);
-        obj.put("time",time);
-        obj.put("up",up);
-        VolleyRequst.getInstance(context).postJosnRequsts(service_url,"url", obj, new VolleyInterface(
-                VolleyInterface.mListener,VolleyInterface.mJsonListener,VolleyInterface.mErrorListener
+        obj.put("data", data);
+        obj.put("time", time);
+        obj.put("up", up);
+        VolleyRequst.getInstance(context).postJosnRequsts(service_url, "url", obj, new VolleyInterface(
+                VolleyInterface.mListener, VolleyInterface.mJsonListener, VolleyInterface.mErrorListener
         ) {
             @Override
             public void onSuccess(String result) {
-               Log.i("测试","postJosnRequsts.onSuccess=="+result);
+                Log.i("测试", "postJosnRequsts.onSuccess==" + result);
                 if (result != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(RE_KEY, result);
@@ -101,24 +101,42 @@ public class ServiceRequst {
 
             @Override
             public void onError(VolleyError volleyError) {
-                Log.i("测试","postJosnRequsts.volleyError=="+volleyError.toString());
+                Log.i("测试", "postJosnRequsts.volleyError==" + volleyError.toString());
             }
         });
     }
 
-    private static String createSign(String signKey, String jsonStr){
-        Gson gson = new Gson();
-        Map<String,Object> params =  gson.fromJson(jsonStr, new TypeToken<HashMap<String,Object>>(){}.getType());
+    private static String createSign(String signKey, String jsonStr) {
+        Map<String, Object> params = jsonToMap(jsonStr);
+        Log.i("测试", "createSign: " + params.toString());
         StringBuilder buf = new StringBuilder((params.size() + 1) * 10);
         SignUtils.buildPayParams(buf, params, false);
         buf.append("&key=").append(signKey);
         String preStr = buf.toString();
         String sign = "";
-        try{
+        try {
             sign = MD5.md5s(preStr).toUpperCase();
-        }catch (Exception e){
+        } catch (Exception e) {
             sign = MD5.md5s(preStr).toUpperCase();
         }
         return sign;
+    }
+
+    private static Map jsonToMap(String jsonStr) {
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(jsonStr);
+            Iterator<String> nameItr = jsonObj.keys();
+            String name;
+            Map<String, String> outMap = new HashMap<>();
+            while (nameItr.hasNext()) {
+                name = nameItr.next();
+                outMap.put(name, jsonObj.getString(name));
+            }
+            return outMap;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
