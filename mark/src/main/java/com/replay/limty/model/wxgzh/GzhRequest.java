@@ -78,7 +78,7 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
                             String url6 = "intent://dl/businessWebview/link?appid=wx6fb989854b5583ed&url=" + url + "#Intent;package=com.tencent.mm;scheme=weixin;i.translate_link_scene=1;end;";
                             Intent intent = Intent.parseUri(url6, 1);
                             intent.setAction(Intent.ACTION_VIEW);
-                            intent.addCategory("android.intent.category.BROWSABLE");
+                            //intent.addCategory("android.intent.category.BROWSABLE");
                             intent.setComponent(null);
 //                            Intent intent = new Intent();
 //                            intent.setClass(mContext,ActivityH5.class);

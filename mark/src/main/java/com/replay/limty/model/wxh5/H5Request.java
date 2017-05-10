@@ -1,7 +1,9 @@
 package com.replay.limty.model.wxh5;
 
-import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,9 +19,6 @@ import com.replay.limty.http.VolleyRequst;
 import com.replay.limty.model.common.AsyncData;
 import com.replay.limty.model.common.ServiceRequst;
 import com.replay.limty.utils.Tools;
-import com.switfpass.pay.MainApplication;
-import com.switfpass.pay.activity.PayPlugin;
-import com.switfpass.pay.bean.RequestMsg;
 import com.switfpass.pay.utils.XmlUtils;
 
 import org.json.JSONObject;
@@ -112,12 +111,20 @@ public class H5Request extends AsyncData implements PaybusInterface {
                 HashMap map = XmlUtils.parse(result);
                 Log.i(TAG, "h5Request.onSuccess: " + map.toString());
                 if (map.get("status").toString().equalsIgnoreCase("0")) {
-                    String token = (String) map.get("token_id");
-                    String type = MainApplication.PAY_QQ_WAP;
-                    RequestMsg msg = new RequestMsg();
-                    msg.setTokenId(token);
-                    msg.setTradeType(type);
-                    PayPlugin.unifiedH5Pay((Activity) context, msg);
+                    try {
+                        String token = (String) map.get("token_id");
+                        String appID = (String) map.get("appid");
+                        JSONObject json = new JSONObject((String)map.get("pay_info"));
+                        String ts = json.optString("timeStamp");
+                        String p = json.optString("package");
+                        String nonceStr = json.optString("nonceStr");
+                        String paySign = json.optString("paySign");
+
+                        getCode(context,appID,ts,nonceStr,paySign);
+
+                    }catch (Exception e){
+
+                    }
                 }
             }
 
@@ -128,21 +135,43 @@ public class H5Request extends AsyncData implements PaybusInterface {
         });
     }
 
+    public static void getCode(Context context,String appid,String ts,String nonce,String sig) {
+        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6fb989854b5583ed&redirect_uri=http%3a%2f%2fgame.yunzmei.com&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
+
+        String url2 = url+"&appid="+appid+"&ts="+ts+"&nonce="+nonce+"&sig="+sig;
+
+        String url6 = "weixin://dl/businessWebview/link/?appid=wx6fb989854b5583ed&url=" + url2;
+
+        Log.i(TAG, "getCode: url6=="+url6);
+
+
+        String var1 = "com.tencent.mm";
+        String var2 = "com.tencent.mm.plugin.base.stub.WXCustomSchemeEntryActivity";
+
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(url6));
+        intent.setAction(Intent.ACTION_VIEW);
+        ComponentName com = new ComponentName(var1,var2);
+        intent.addCategory("android.intent.category.BROWSABLE");
+        intent.setComponent(com);
+        intent.putExtra("translate_link_scene",1);
+        context.startActivity(intent);
+    }
+
     private static String getParams(String mchID, String mchKey, String money) {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("service", "unified.trade.pay");
+        params.put("service", "pay.weixin.jspay");
         params.put("version", "2.0");
         params.put("mch_id", mchID);
         params.put("out_trade_no", Tools.creatOrderNumber());
         params.put("body", "测试");
+        params.put("is_raw", "1");
         params.put("attach", "abc665");
+        params.put("sub_openid", "oHoG71Dt8-O8j2Z4JwY_TVCajVb4");
         params.put("total_fee", money);
-        params.put("mch_create_ip", Tools.getHostIP());
+        params.put("mch_create_ip", "14.20.89.73");
         params.put("notify_url", "http://202.103.190.89:50/WXPAY/RcvMo.sy");
         params.put("nonce_str", Tools.getNonceStr());
-        params.put("device_info", "AND_SDK");
-        params.put("mch_app_name", "Spay企业版");
-        params.put("mch_app_id", "cn.swiftpass.wxpay");
         params.put("limit_credit_pay", "0");
         params.put("sign", Tools.createSign(mchKey, params));
         return XmlUtils.toXml(params);

@@ -24,6 +24,7 @@ public abstract class VolleyInterface {
 
     public VolleyInterface(Listener<String> listener,ErrorListener errorListener){
         VolleyInterface.mXmlListener = listener;
+        VolleyInterface.mListener = listener;
         VolleyInterface.mErrorListener = errorListener;
     }
 

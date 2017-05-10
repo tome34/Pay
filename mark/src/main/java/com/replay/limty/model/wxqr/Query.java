@@ -42,7 +42,7 @@ public class Query {
         VolleyRequst.getInstance(context).postXmlRequset(query_url, "query", XmlUtils.toXml(params),
                 new VolleyInterface(VolleyInterface.mXmlListener,VolleyInterface.mErrorListener) {
                     @Override
-                    public void onSuccess(String result) {
+                        public void onSuccess(String result) {
                         if (result != null) {
                             Bundle bundle = new Bundle();
                             bundle.putString(RE_KEY, result);

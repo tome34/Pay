@@ -7,6 +7,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -31,6 +32,18 @@ public class VolleyRequst {
             instance = new VolleyRequst(context);
         }
         return instance;
+    }
+
+    public void getRequset(String url, String tag, VolleyInterface vif){
+        queue.cancelAll(tag);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,vif.getListener(),vif.getErrorListener());
+        stringRequest.setTag(tag);
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                40 * 1000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+        queue.add(stringRequest);
     }
 
     public void postXmlRequset(String url, String tag, String xmlString, VolleyInterface vif) {

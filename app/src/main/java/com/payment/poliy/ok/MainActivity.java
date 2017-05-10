@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.payment.poliy.R;
 import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.PayRequest;
+import com.replay.limty.model.wxgzh.GzhTools;
 import com.replay.limty.utils.Tools;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_init:
 //                PayRequest.getInstance().init(this,APP_ID,PARTNER_ID,"6A16823ED6305BB22EF92BC703CDD8AE");
 //                TestAPI.sendRequest(this,"api测试",Tools.creatOrderNumber(),"1","abc887",TestAPI.WX_APP);
-//                H5Request.h5Request(this,"102510199738","b99e2e0822d133a5fe279ddfd114067f","1");
+               // H5Request.h5Request(this,"102510199738","b99e2e0822d133a5fe279ddfd114067f","1");
+              // GzhTools.getCode(this);
 
+                GzhTools.getCode(this);
                 break;
 
             case R.id.btnWx_app:
