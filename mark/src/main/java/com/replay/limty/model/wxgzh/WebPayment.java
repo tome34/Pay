@@ -44,7 +44,7 @@ public class WebPayment extends Activity {
         } else if (AsyncData.payType == PayRequest.WX_GZH) {
             //webInterface.openWxWeb(this,body);
             WebPay.cmdOpenWeiXin(body,this);
-            //
+            //jjj
         }
     }
 
