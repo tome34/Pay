@@ -28,12 +28,12 @@
 //    private static final String service_url = "http://43.247.68.114:8084/main/preorder";
 //    private static final String notify_url = "http://202.103.190.89:50/WXPAY/RcvMo.sy";
 //
-//    public static void servicePay(Context context, String appID, String partnerId, String payType,
+//    public static void servicePay(Context context, String channelCode, String partnerId, String payType,
 //                                String orderNumber, String body, String attach, String money) throws JSONException {
 //        JSONObject params = new JSONObject();
 //        String data = "";
 //        String up = "";
-//        params.put("appId",appID);
+//        params.put("appId",channelCode);
 //        params.put("partnerId",partnerId);
 //        params.put("out_trade_no",orderNumber);
 //        params.put("totalFee",money);

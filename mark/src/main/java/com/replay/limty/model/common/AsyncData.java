@@ -8,7 +8,6 @@ import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.PayRequest;
 import com.replay.limty.http.VolleyInterface;
 import com.replay.limty.http.VolleyRequst;
-import com.replay.limty.utils.Pref;
 import com.replay.limty.utils.Tools;
 
 import org.json.JSONException;
@@ -18,7 +17,7 @@ import org.json.JSONObject;
  * Created by Administrator on 2017/4/17 0017.
  */
 
-public class AsyncData {
+public class AsyncData{
 
     public static final String TAG = "同步数据";
     public static AsyncData instance;
@@ -60,13 +59,12 @@ public class AsyncData {
 
     public void sendPaymentState(int payStateCode,Context context){
         JSONObject object = new JSONObject();
-        String defulUrl = "http://202.103.190.89:50/";
-        String url = Pref.with(context).read("merchUrl", defulUrl)+"APPpayStateCode/RcvMo.sy";
+        String url = "http://202.103.190.89:50/APPpayStateCode/RcvMo.sy";
         try {
             object.put("payStateCode", payStateCode);
-            object.put("appId", PayRequest.appID);
+            object.put("channelCode", PayRequest.channelCode);
             object.put("allocationID", PayRequest.partnerID);
-            object.put("merchID", PayRequest.partnerID);
+            object.put("merchID", "");
             object.put("commodity", orderInfo.getBody());
             object.put("orderNumer", orderInfo.getOrderNumber());
             object.put("money", orderInfo.getMoney());
@@ -79,7 +77,13 @@ public class AsyncData {
             object.put("mobile_imsi", Tools.getIMSI(context));
             object.put("mobile_iccid", Tools.getICCID(context));
             object.put("client_ip", Tools.getHostIP());
-            object.put("payType",payType);
+            String type = "";
+            if(payType.equals(PayRequest.WX_GZH)){
+                type = "pay.weixin.jspay";
+            }else{
+                type = payType;
+            }
+            object.put("payType",type);
             Log.i(TAG, "url"+url+"参数=="+object.toString());
             VolleyRequst.getInstance(context).postJosnRequst(url, "PaymentState", object, new VolleyInterface(
                     null,VolleyInterface.mJsonListener,VolleyInterface.mErrorListener) {

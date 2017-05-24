@@ -7,11 +7,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.PayRequest;
 import com.replay.limty.control.PaybusInterface;
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.control.PayCallback;
 import com.replay.limty.model.common.ServiceRequst;
+import com.replay.limty.utils.DesHelper;
+import com.replay.limty.utils.Pref;
 
 import org.json.JSONObject;
 
@@ -39,7 +41,7 @@ public class QrRequest extends AsyncData implements PaybusInterface {
         initData(context, body, orderNumber, money, attach, payType, callBack);
         if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             try {
-                ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
+                ServiceRequst.servicePay(mContext, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -63,15 +65,16 @@ public class QrRequest extends AsyncData implements PaybusInterface {
     private void requestWxPay(String payParams) {
         if (payParams != null && !"".equals(payParams)) {
             try {
-                JSONObject result = new JSONObject(payParams);
-                if (result.optString("resultCode").equals("0")) {
+                JSONObject obj = new JSONObject(payParams);
+                if (obj.optString("resultCode").equals("0")) {
                     try {
-                        JSONObject obj = result.optJSONObject("data");
-                        if (!TextUtils.isEmpty(obj.optString("code_img_url"))) {
+                        String string = DesHelper.decrypt(obj.optString("data"), Pref.with(mContext).read("key",""));
+                        JSONObject result = new JSONObject(string);
+                        if (!TextUtils.isEmpty(result.optString("code_img_url"))) {
                             PayRequest.getInstance().executeTask();
                             Intent intent = new Intent();
                             intent.setClass(mContext, ShowActivity.class);
-                            intent.putExtra("body", obj.toString());
+                            intent.putExtra("body", result.toString());
                             mContext.startActivity(intent);
                         } else {
                             callBack.payResult(3006, "没有获取到token_id");

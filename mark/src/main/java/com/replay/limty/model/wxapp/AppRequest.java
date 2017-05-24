@@ -47,7 +47,7 @@ public class AppRequest extends AsyncData implements PaybusInterface {
 
     private void sendRequest(String body, String orderNumber, String money, String attach, String payType) {
         try {
-            ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
+            ServiceRequst.servicePay(mContext, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
         } catch (Exception e) {
             e.printStackTrace();
         }

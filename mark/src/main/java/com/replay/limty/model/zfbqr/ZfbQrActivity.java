@@ -4,20 +4,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.replay.limty.R;
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.control.PayCallback;
-import com.replay.limty.model.common.WxTools;
 import com.replay.limty.model.wxqr.Query;
-import com.replay.limty.utils.ToastTools;
-import com.switfpass.pay.utils.XmlUtils;
+import com.replay.limty.utils.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,16 +19,12 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 public class ZfbQrActivity extends AppCompatActivity {
 
-    public static final String TAG = "Query";
     private String urlText;
     private Bitmap qrBitmap;
     private ImageView qrCode;
-    private WxTools wxTools;
-    private PayCallback callback;
     private String mch_id;
 
     @Override
@@ -46,85 +36,26 @@ public class ZfbQrActivity extends AppCompatActivity {
         String body = intent.getStringExtra("body");
 
         qrCode = (ImageView) findViewById(R.id.qrCode);
-        wxTools = new WxTools(this);
         try {
             show(body);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-
-        if(AsyncData.callBack != null){
-            this.callback = AsyncData.callBack;
         }
     }
 
     public void doClick(View view) {
         int i = view.getId();
         if (i == R.id.btnWxPay) {
+            Tools.openAliPay(this);
             AsyncData.getInstance().sendPaymentState(5000, this);
-            wxTools.shareText(urlText);
         } else if (i == R.id.back) {
-            Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
+            Query.getInstance().payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, false);
         }
     }
 
     @Override
     public void onBackPressed() {
-        Query.payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, handler);
-    }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == Query.RE_SUCCESS_BACK) {
-                Bundle bundle = msg.getData();
-                String body = bundle.getString(Query.RE_KEY);
-                if (body != null) {
-                    Log.i(TAG, "handleMessage: " + body);
-                    Map<String, String> result = XmlUtils.parse(body);
-                    handleResult(result);
-                }
-            }
-        }
-    };
-
-    private void handleResult(Map<String, String> result) {
-        if (result.get("status").equals("0")) {
-            if (result.get("result_code").equals("0")) {
-                String payState = result.get("trade_state").toUpperCase();
-                backResult(payState);
-            } else {
-                this.callback.payResult(5001, result.get("err_msg"));
-            }
-        } else {
-            callback.payResult(5002, result.get("message"));
-        }
-    }
-
-    private void backResult(String payState) {
-        switch (payState) {
-            case "SUCCESS":
-                callback.payResult(0, "支付成功");
-                finish();
-                break;
-            case "REFUND":
-                callback.payResult(-1, "已转入退款");
-                finish();
-                break;
-            case "NOTPAY":
-                ToastTools.showDialog(this);
-                callback.payResult(-2, "未支付");
-                break;
-            case "CLOSED":
-                callback.payResult(-3, "订单已关闭");
-                finish();
-                break;
-            case "PAYERROR":
-                callback.payResult(-4, "支付失败");
-                finish();
-                break;
-        }
+        Query.getInstance().payState(this, AsyncData.orderInfo.getOrderNumber(),mch_id, false);
     }
 
     private void show(String body) throws JSONException {

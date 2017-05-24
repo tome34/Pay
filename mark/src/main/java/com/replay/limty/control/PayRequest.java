@@ -4,9 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.replay.limty.model.common.AsyncData;
-import com.replay.limty.model.wxapp.AppRequest;
 import com.replay.limty.model.wxgzh.GzhRequest;
-import com.replay.limty.model.wxh5.H5Request;
 import com.replay.limty.model.wxqr.QrRequest;
 import com.replay.limty.model.zfbh5.ZfbH5Request;
 import com.replay.limty.model.zfbqr.ZfbQrRequest;
@@ -20,14 +18,14 @@ public class PayRequest {
 
     public static final String WX_APP = "pay.weixin.app";    //微信APP
     public static final String WX_EWM = "pay.weixin.native"; //微信二维码
-    public static final String WX_GZH = "pay.weixin.jspay";  //微信公众号
+    public static final String WX_GZH = "pay.weixin.jspay.pre";  //微信公众号
     public static final String WX_H5 = "pay.weixin.wappay";  //微信H5支付
     public static final String ZFB_QR = "pay.alipay.native";//支付宝二维码
     public static final String ZFB_WAPH5 = "pay.alipay.native";//支付宝H5支付
     public static final String ZFB_JS = "pay.alipy.jspay";  //支付宝服务窗支付
     public static final String ZFB_wap = "unified.trade.pay"; //支付宝wap支付
 
-    public static String appID;
+    public static String channelCode;
     public static String partnerID;
     public static String key;
     private boolean isPartner = true;
@@ -46,30 +44,29 @@ public class PayRequest {
         return instance;
     }
 
-    public void init(String appId, String partnerID,String key){
-        this.appID = appId;
+    public void init(String channelCode, String partnerID){
+        this.channelCode = channelCode;
         this.partnerID = partnerID;
-        this.key = key;
     }
 
     public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack){
         this.mContext = context;
         if(payType.equals(WX_APP)){
-            payBus = AppRequest.getInstance();
+            callBack.payResult(-1000,"暂不支持此模式");
         }else if(payType.equals(WX_EWM)){
             payBus = QrRequest.getInstance();
         }else if(payType.equals(WX_GZH)){
             payBus = GzhRequest.getInstance();
         }else if(payType.equals(WX_H5)){
-            payBus = H5Request.getInstance();
+            callBack.payResult(-1000,"暂不支持此模式");
         }else if(payType.equals(ZFB_QR)&&false) {
             payBus = ZfbQrRequest.getInstance();
         } else if(payType.equals(ZFB_WAPH5)) {
             payBus = ZfbH5Request.getInstance();
         }else if(payType.equals(ZFB_JS)) {
-            payBus = H5Request.getInstance();
+            callBack.payResult(-1000,"暂不支持此模式");
         }else if(payType.equals(ZFB_wap)) {
-            payBus = H5Request.getInstance();
+            callBack.payResult(-1000,"暂不支持此模式");
         }
         payBus.pay(context,body,orderNumber,money,attach,payType,callBack);
     }

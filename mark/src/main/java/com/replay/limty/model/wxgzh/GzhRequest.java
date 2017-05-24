@@ -1,11 +1,12 @@
 package com.replay.limty.model.wxgzh;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
+import android.util.Log;
 
 import com.replay.limty.control.PayCallback;
 import com.replay.limty.control.PayRequest;
@@ -22,8 +23,9 @@ import org.json.JSONObject;
 public class GzhRequest extends AsyncData implements PaybusInterface {
 
     public static GzhRequest instance;
+    public static ProgressDialog progressDialog = null;
 
-    private GzhRequest() {
+    public GzhRequest() {
         super();
     }
 
@@ -35,7 +37,7 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
     }
 
     @Override
-    public void pay(Context context, String body, String orderNumber, String money, String attach, String payType,final PayCallback callBack) {
+    public void pay(Context context, String body, String orderNumber, String money, String attach, String payType, final PayCallback callBack) {
         initData(context, body, orderNumber, money, attach, payType, callBack);
         if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             sendRequest(body, orderNumber, money, attach, payType);
@@ -44,7 +46,8 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
 
     private void sendRequest(String body, String orderNumber, String money, String attach, String payType) {
         try {
-            ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID,payType, orderNumber, body, attach, money,handler);
+            showDialog(mContext,true);
+            ServiceRequst.servicePay(mContext, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money, handler);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,6 +60,7 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
             if (msg.what == ServiceRequst.RE_SUCCESS_BACK) {
                 Bundle bundle = msg.getData();
                 String body = bundle.getString(ServiceRequst.RE_KEY);
+                Log.i(TAG, "handleMessage 1:"+body);
                 if (body != null) {
                     requestWxPay(body);
                 }
@@ -69,27 +73,9 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
             try {
                 JSONObject result = new JSONObject(payParams);
                 if (result.optString("resultCode").equalsIgnoreCase("0")) {
-                    try {
-                        JSONObject obj = result.optJSONObject("data");
-                        String tokenID = obj.optString("token_id");
-                        if (!TextUtils.isEmpty(tokenID)) {
-                            //TODO
-                            String url = "https://pay.swiftpass.cn/pay/jspay?token_id="+tokenID+"&showwxtitle=1";
-                            String url6 = "intent://dl/businessWebview/link?appid=wx6fb989854b5583ed&url=" + url + "#Intent;package=com.tencent.mm;scheme=weixin;i.translate_link_scene=1;end;";
-                            Intent intent = Intent.parseUri(url6, 1);
-                            intent.setAction(Intent.ACTION_VIEW);
-                            //intent.addCategory("android.intent.category.BROWSABLE");
-                            intent.setComponent(null);
-//                            Intent intent = new Intent();
-//                            intent.setClass(mContext,ActivityH5.class);
-//                            intent.putExtra("uri",url);
-                            mContext.startActivity(intent);
-                        } else {
-                            callBack.payResult(3006, "没有获取到token_id");
-                        }
-                    } catch (Exception var7) {
-                        callBack.payResult(3003, "上下文非法");
-                    }
+                    String string = result.optString("data");
+                    Log.i(TAG, "2  :"+ string);
+                    requstService(string);
                 } else {
                     PayRequest.getInstance().repairOrder();
                 }
@@ -98,6 +84,31 @@ public class GzhRequest extends AsyncData implements PaybusInterface {
             }
         } else {
             callBack.payResult(3002, "下单失败，订单不合法");
+        }
+    }
+
+    private void requstService(String string) {
+        try {
+            Intent intent = new Intent(mContext,WebPayment.class);
+            intent.putExtra("body",string);
+            mContext.startActivity(intent);
+            Thread.sleep(200);
+            if(progressDialog != null){
+                progressDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showDialog(Context context,boolean isShow){
+        if(isShow){
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setProgressStyle(0);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("正在跳转到微信支付，请稍等...");
+            progressDialog.show();
         }
     }
 }

@@ -7,21 +7,4 @@
     android:orientation="vertical"
     tools:context="com.payment.poliy.test.TestActivity">
 
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开微信浏览器"
-        android:onClick="doClick"
-        />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开微信"
-        android:onClick="doClick"
-         />
-
 </LinearLayout>

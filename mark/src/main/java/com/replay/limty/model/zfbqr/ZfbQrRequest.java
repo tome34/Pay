@@ -40,8 +40,7 @@ public class ZfbQrRequest extends AsyncData implements PaybusInterface {
         //检查
         if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             try {
-                ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
-               // ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money, Tools.getHostIP(), handler);
+                ServiceRequst.servicePay(mContext, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money,handler);
             } catch (Exception e) {
                 e.printStackTrace();
             }

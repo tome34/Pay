@@ -2,8 +2,10 @@ package com.replay.limty.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -207,6 +209,25 @@ public class Tools {
     public static String getNonceStr(){
         Random random = new Random();
         return MD5.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes());
+    }
+
+    public static void openWeChat(Context context) {
+        try {
+            Intent var1 = context.getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+            context.startActivity(var1);
+        } catch (Exception var2) {
+            ToastTools.show(context, "打开微信失败，请检查您是否安装了微信！");
+        }
+    }
+
+    public static void openAliPay(Context context) {
+        try {
+            Uri var1 = Uri.parse("alipayqr://platformapi/startapp?saId=10000007");
+            Intent var3 = new Intent("android.intent.action.VIEW", var1);
+            context.startActivity(var3);
+        } catch (Exception var2) {
+            ToastTools.show(context, "打开支付宝失败，请检查您是否安装了微信！");
+        }
     }
 }
 

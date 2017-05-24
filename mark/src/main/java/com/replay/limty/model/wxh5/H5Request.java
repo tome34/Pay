@@ -1,9 +1,6 @@
 package com.replay.limty.model.wxh5;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,7 +50,7 @@ public class H5Request extends AsyncData implements PaybusInterface {
         initData(context, body, orderNumber, money, attach, payType, callBack);
         if (PayRequest.getInstance().checkInfo(body, orderNumber, money)) {
             try {
-                ServiceRequst.servicePay(mContext, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money, handler);
+                ServiceRequst.servicePay(mContext, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money, handler);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -112,15 +109,6 @@ public class H5Request extends AsyncData implements PaybusInterface {
                 Log.i(TAG, "h5Request.onSuccess: " + map.toString());
                 if (map.get("status").toString().equalsIgnoreCase("0")) {
                     try {
-                        String token = (String) map.get("token_id");
-                        String appID = (String) map.get("appid");
-                        JSONObject json = new JSONObject((String)map.get("pay_info"));
-                        String ts = json.optString("timeStamp");
-                        String p = json.optString("package");
-                        String nonceStr = json.optString("nonceStr");
-                        String paySign = json.optString("paySign");
-
-                        getCode(context,appID,ts,nonceStr,paySign);
 
                     }catch (Exception e){
 
@@ -135,29 +123,6 @@ public class H5Request extends AsyncData implements PaybusInterface {
         });
     }
 
-    public static void getCode(Context context,String appid,String ts,String nonce,String sig) {
-        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6fb989854b5583ed&redirect_uri=http%3a%2f%2fgame.yunzmei.com&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
-
-        String url2 = url+"&appid="+appid+"&ts="+ts+"&nonce="+nonce+"&sig="+sig;
-
-        String url6 = "weixin://dl/businessWebview/link/?appid=wx6fb989854b5583ed&url=" + url2;
-
-        Log.i(TAG, "getCode: url6=="+url6);
-
-
-        String var1 = "com.tencent.mm";
-        String var2 = "com.tencent.mm.plugin.base.stub.WXCustomSchemeEntryActivity";
-
-        Intent intent = new Intent();
-        intent.setData(Uri.parse(url6));
-        intent.setAction(Intent.ACTION_VIEW);
-        ComponentName com = new ComponentName(var1,var2);
-        intent.addCategory("android.intent.category.BROWSABLE");
-        intent.setComponent(com);
-        intent.putExtra("translate_link_scene",1);
-        context.startActivity(intent);
-    }
-
     private static String getParams(String mchID, String mchKey, String money) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("service", "pay.weixin.jspay");
@@ -165,9 +130,9 @@ public class H5Request extends AsyncData implements PaybusInterface {
         params.put("mch_id", mchID);
         params.put("out_trade_no", Tools.creatOrderNumber());
         params.put("body", "测试");
-        params.put("is_raw", "1");
+        params.put("is_raw", "0");
         params.put("attach", "abc665");
-        params.put("sub_openid", "oHoG71Dt8-O8j2Z4JwY_TVCajVb4");
+        params.put("sub_openid", "oqlnO1dyCni2WDcmMcg4FAqFG61g");
         params.put("total_fee", money);
         params.put("mch_create_ip", "14.20.89.73");
         params.put("notify_url", "http://202.103.190.89:50/WXPAY/RcvMo.sy");

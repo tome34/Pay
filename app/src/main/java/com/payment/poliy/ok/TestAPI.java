@@ -22,7 +22,7 @@
 //
 //    public static void sendRequest(Context context,String body, String orderNumber, String money, String attach, String payType) {
 //        try {
-//            ServiceRequst.servicePay(context, PayRequest.appID, PayRequest.partnerID, payType, orderNumber, body, attach, money);
+//            ServiceRequst.servicePay(context, PayRequest.channelCode, PayRequest.partnerID, payType, orderNumber, body, attach, money);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }

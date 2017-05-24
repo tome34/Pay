@@ -3,10 +3,12 @@ package com.payment.poliy.test;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 
-import com.payment.poliy.R;
+import com.replay.limty.model.common.ShowQrLinearLayout;
 
 import java.net.URISyntaxException;
 
@@ -24,17 +26,16 @@ public class TestActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+
+        ShowQrLinearLayout layout = new ShowQrLinearLayout(this);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), com.replay.limty.R.drawable.send_img);
+        layout.setQrBitmap(bitmap);
+        setContentView(layout);
     }
 
     public void doClick(View view) {
         switch (view.getId()) {
-            case R.id.button:
-                shareToWechat();
-                break;
-            case R.id.button2:
-                openWeChat();
-                break;
+
         }
     }
 

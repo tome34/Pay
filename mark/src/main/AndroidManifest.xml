@@ -21,24 +21,9 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".model.zfbqr.ZfbQrActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:name=".model.wxgzh.WebPayment"
+            android:theme="@style/TranslucentTheme" />
 
-        <activity
-            android:name="com.switfpass.pay.activity.QQWapPayWebView"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <activity
-            android:name="com.switfpass.pay.activity.PaySDKCaptureActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <activity
-            android:name="com.replay.limty.model.wxh5.ActivityH5"
-            android:exported="false"
-            android:label="FastPayActivityH5"
-            android:theme="@android:style/Theme.Light.NoTitleBar" />
     </application>
 
 </manifest>
